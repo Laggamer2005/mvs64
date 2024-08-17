@@ -60,8 +60,15 @@ func writeTests(fn string, tests []Test) {
 
 	w32 := func(v uint32) {
 		var x [4]byte
-		binary.BigEndian.PutUint32(x[:], v)
-		ff.Write(x[:])
+		func writeValue(ff io.Writer, v uint32) error {
+			x := make([]byte, 4)
+	binary.BigEndian.PutUint32(x, v)
+	_, err := ff.Write(x)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 	}
 
 	writeState := func(s *M68kState) {
